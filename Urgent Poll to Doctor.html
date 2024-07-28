@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f7f7f7, #e0e0e0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 90px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333333;
+        } 
+        .subheading {
+            font-size: 15px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 20px;
+            color: #555555;
+        }
+        .image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: space-around;
+            align-items: center;
+            flex-direction: row;
+        }
+        .button {
+            padding: 20px 5px;
+            font-size: 20px;
+            cursor: pointer;
+            border: 0px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #ffffff;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+        }
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .yes {
+            background-color: #4CAF50;
+        }
+        .no {
+            background-color: #f44336;
+        }
+        .button-text {
+            margin-top: 5px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        .checkbox {
+            position: absolute;
+            top: 15px;
+            left: 90px;
+            width: 20px;
+            height: 20px;
+        }
+        .additional-info {
+            font-size: 16px;
+            color: #666666;
+            margin-top: 20px;
+        }
+        .additional-infos {
+            font-size: 12px;
+            padding: 0 5rem;
+            margin-top: 12px;
+            color: #666666;
+        }
+        .privacy-policy {
+            font-size: 14px;
+            color: #999999;
+            margin-top: 20px;
+        }
+        /* Popup Styles */
+        .popup, .graph-popup {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s;
+        }
+        .popup-content, .graph-popup-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .popup-title, .graph-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .popup-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .popup-button, .graph-button {
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
+            color: #ffffff;
+            background-color: #4CAF50;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .popup-button:hover, .graph-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .popup-footer, .graph-footer {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #777777;
+        }
+        .popup-footer .lock-icon, .graph-footer .lock-icon {
+            margin-right: 5px;
+        }
+        .popup-message, .graph-message {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333333;
+        }
+        /* Graph Styles */
+        .graph {
+            width: 100%;
+            height: 300px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            position: relative;
+        }
+        .graph-bar {
+            width: 40%;
+            margin: 0 5px;
+            position: relative;
+            border-radius: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+        .graph-bar::before {
+            content: attr(data-percentage) '%';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .graph-bar.yes {
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            height: 55%;
+        }
+        .graph-bar.no {
+            background: linear-gradient(135deg, #ef5350, #e53935);
+            height: 45%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Curious About How to Boost Your Medical Practice’s Efficiency by 30% in Just 30 Days?</div>
+        <div class="subheading">Cast Your Vote To Become A Member Of Our Trusted Clients...</div>
+        <img src="https://visionstudio.icu/wp-content/uploads/2024/07/Untitledvideo-MadewithClipchamp1-ezgif.com-video-to-gif-converter.gif" alt="Before and After" class="image">
+        <div class="buttons">
+            <button class="button yes" onclick="handleYesClick()">
+                <input type="checkbox" class="checkbox" checked disabled>
+                YES
+                <div class="button-text">I Want To Know The Secret!</div>
+            </button>
+            <button class="button no" onclick="handleNoClick()">
+                <input type="checkbox" class="checkbox" checked disabled>
+                NO
+                <div class="button-text">I Don't Want To Get More Customers..</div>
+            </button>
+        </div>
+        <div class="additional-info">
+            You'll See the Opinion of Over 45,000 Doctors After You Cast Your Vote. Today Is Your Chance to Transform Your Practice and Enhance Your Social Proof.
+        </div>
+        <div class="additional-infos">
+            <span class="lock-icon">🔒</span>All Submissions Will Not Be Publicly Available. No Need To Worry About 3rd Parties.
+        </div>
+        <div class="privacy-policy">
+            Privacy Policy | All Rights Reserved
+        </div>
+    </div>
+
+    <!-- Email Popup -->
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <p class="popup-title">Enter Your Email to Cast Your Vote and See the Results of This Urgent Poll</p>
+            <input type="email" class="popup-input" placeholder="Enter your email" required>
+            <button class="popup-button" onclick="showGraphPopup()">Show Me The Results</button>
+            <div class="popup-footer">
+                <span class="lock-icon">🔒</span> Safe And Secure Submission
+            </div>
+            <div class="popup-message">
+                You'll receive an email with the current results in the next 30 minutes. The results are shocking right now...
+            </div>
+        </div>
+    </div>
+
+    <!-- Graph Popup -->
+    <div class="graph-popup" id="graphPopup">
+        <div class="graph-popup-content">
+            <p class="graph-title">Results of the Poll</p>
+            <div class="graph">
+                <div class="graph-bar yes" data-percentage="55"></div>
+                <div class="graph-bar no" data-percentage="45"></div>
+            </div>
+            <p class="graph-message">The majority of doctors want to learn more about boosting their practice!</p>
+            <button class="graph-button" onclick="redirectToBusinessPage()">Grow My Practice!</button>
+            <div class="graph-footer">
+                <span class="lock-icon">🔒</span> Your Information Is Safe
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleYesClick() {
+            document.getElementById('popup').style.display = 'flex';
+        }
+
+        function handleNoClick() {
+            console.log("No button clicked");
+        }
+
+        function showGraphPopup() {
+            const emailInput = document.querySelector('.popup-input').value;
+            if (emailInput) {
+                document.getElementById('popup').style.display = 'none';
+                document.getElementById('graphPopup').style.display = 'flex';
+            } else {
+                alert("Please enter a valid email address.");
+            }
+        }
+
+        function redirectToBusinessPage() {
+            window.location.href = 'mailto:info@visionstudio.icu'; // Replace with your actual link for business growth
+        }
+    </script>
+</body>
+</html>
